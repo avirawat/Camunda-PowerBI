@@ -46,20 +46,18 @@ public class GetTokenAccess {
 	 * @param Job Instances
 	 * This function will take all inputs from job
 	 */
+	@SuppressWarnings("unchecked")
 	@ZeebeWorker(type = "getDataSetsTask", autoComplete = true)
 	public void generateToken(final ActivatedJob job)
 			throws JsonParseException, JsonMappingException, IOException, InterruptedException {
 		logger.error("Inside Service task");
-		
 		String jsonString = job.getVariables();
-		//change jsonString to jsonObject
-		JSONObject json = new JSONObject(jsonString);
-		//Getting process instance value
-		String client_id=json.getString("client_id");
-		String tenant_id=json.getString("tenant_id");
-		String dataset_id=json.getString("dataset_id");
-		String client_secret=json.getString("client_secret");
-		//Getting url from properties file
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, String> map = mapper.readValue(jsonString, Map.class);
+		String client_id=map.get("client_id");
+		String tenant_id=map.get("tenant_id");
+		String dataset_id=map.get("dataset_id");
+		String client_secret=map.get("client_secret");
 		String url=env.getProperty("url")+tenant_id+"/oauth2/token";
 		getAccessToken(url,client_id,dataset_id,client_secret);
 		
@@ -75,7 +73,7 @@ public class GetTokenAccess {
 	 */
 	public void getAccessToken(String stringUrl,String client_id,String dataset_id,String client_secret) throws IOException, InterruptedException {
 
-		    logger.error("Generating access token ",stringUrl);
+		    logger.error(stringUrl);
 
 		    URL url = new URL(stringUrl);
 	        String postData = "grant_type=client_credentials&client_id="+client_id+"&client_secret="+client_secret+"&scope=Dataset.ReadWrite.All";
