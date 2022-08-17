@@ -17,6 +17,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.camunda.powerbi.ConstantVariables;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,6 +31,10 @@ import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
  */
 @Service
 public class GetTokenAccess {
+	String CLIENT_ID = ConstantVariables.CLIENT_ID;
+	String TENANT_ID=ConstantVariables.TENANT_ID;
+	String DATASET_ID=ConstantVariables.DATASET_ID;
+	String CLIENT_SECRET=ConstantVariables.CLIENT_SECRET;
 	
 	 private static Logger logger = LoggerFactory.getLogger(GetTokenAccess.class);
 	
@@ -52,10 +57,10 @@ public class GetTokenAccess {
 		String jsonString = job.getVariables();
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, String> map = mapper.readValue(jsonString, Map.class);
-		String client_id=map.get("client_id");
-		String tenant_id=map.get("tenant_id");
-		String dataset_id=map.get("dataset_id");
-		String client_secret=map.get("client_secret");
+		String client_id=map.get(CLIENT_ID);
+		String tenant_id=map.get(TENANT_ID);
+		String dataset_id=map.get(DATASET_ID);
+		String client_secret=map.get(CLIENT_SECRET);
 		String url=env.getProperty("url")+tenant_id+"/oauth2/token";
 		getAccessToken(url,client_id,dataset_id,client_secret);
 		
