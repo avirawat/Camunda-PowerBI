@@ -24,10 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
 
-/**
- * @author AvinashRavat
- *
- */
 @Service
 public class GetTokenAccess {
 	
@@ -42,7 +38,6 @@ public class GetTokenAccess {
 	}
 	
 	private RestTemplate restTemplate;
-	
 	
 	@SuppressWarnings("unchecked")
 	@ZeebeWorker(type = "getDataSetsTask", autoComplete = true)

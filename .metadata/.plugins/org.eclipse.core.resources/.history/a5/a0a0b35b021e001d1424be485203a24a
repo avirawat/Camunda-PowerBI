@@ -24,10 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
 
-/**
- * @author AvinashRavat
- *
- */
 @Service
 public class GetTokenAccess {
 	
@@ -43,12 +39,11 @@ public class GetTokenAccess {
 	
 	private RestTemplate restTemplate;
 	
-	
 	@SuppressWarnings("unchecked")
 	@ZeebeWorker(type = "getDataSetsTask", autoComplete = true)
 	public void generateToken(final ActivatedJob job)
 			throws JsonParseException, JsonMappingException, IOException, InterruptedException {
-		logger.error("Inside Service task");
+		logger.debug("Inside Service task");
 		String jsonString = job.getVariables();
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, String> map = mapper.readValue(jsonString, Map.class);
@@ -79,7 +74,7 @@ public class GetTokenAccess {
 //				.build();
 //		HttpClient httpClient=HttpClient.newHttpClient();
 //		HttpResponse<String> response=httpClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
-		 logger.error(url);
+		 logger.debug(url);
 		
 		 HttpHeaders headers = new HttpHeaders();
          headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -88,11 +83,11 @@ public class GetTokenAccess {
          requestFormData.add("client_id", client_id);
          requestFormData.add("client_secret", client_secret);
          requestFormData.add("scope", env.getProperty("scope"));
-         logger.error("1");
+         logger.debug("1");
          HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(requestFormData, headers);
-         logger.error("2");
+         logger.debug("2");
          Object response = restTemplate.postForEntity(url, request, Object.class);
-         logger.error("response ", response);
+         logger.debug("response ", response);
 				
 		
 	}
