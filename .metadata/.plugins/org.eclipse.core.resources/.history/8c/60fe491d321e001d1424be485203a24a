@@ -41,11 +41,9 @@ public class GetTokenAccess {
 	   return builder.build();
 	}
 	
-	/**
-	 * @author AvinashRavat
-	 * @param Job Instances
-	 * This function will take all inputs from job
-	 */
+	private RestTemplate restTemplate;
+	
+	
 	@SuppressWarnings("unchecked")
 	@ZeebeWorker(type = "getDataSetsTask", autoComplete = true)
 	public void generateToken(final ActivatedJob job)
@@ -61,21 +59,14 @@ public class GetTokenAccess {
 		String url=env.getProperty("url")+tenant_id+"/oauth2/token";
 		getAccessToken(url,client_id,dataset_id,client_secret);
 		
+		
 	}
 	
-	/**
-	 * @author AvinashRavat
-	 * @param stringUrl
-	 * @param clientId
-	 * @param dataset_id
-	 * @param client_secret
-	 * This function will generate access token by using parameters
-	 */
-	public void getAccessToken(String stringUrl,String client_id,String dataset_id,String client_secret) throws IOException, InterruptedException {
+	public void getAccessToken(String urls,String client_id,String dataset_id,String client_secret) throws IOException, InterruptedException {
 
-		    logger.error(stringUrl);
+		    logger.error(urls);
 
-		    URL url = new URL(stringUrl);
+		    URL url = new URL(urls);
 	        String postData = "grant_type=client_credentials&client_id="+client_id+"&client_secret="+client_secret+"&scope=Dataset.ReadWrite.All";
 	 
 	        URLConnection conn = url.openConnection();
@@ -90,8 +81,11 @@ public class GetTokenAccess {
 	        try (BufferedReader bf = new BufferedReader(new InputStreamReader(
 	                                                        conn.getInputStream())))
 	        {
-			
-	        	System.out.println(bf.readLine());
+	            String line;
+	            while ((line = bf.readLine()) != null) {
+	            	System.out.println();
+	                System.out.println(line);
+	            }
 	        }
 		
 	}

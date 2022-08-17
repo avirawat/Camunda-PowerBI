@@ -1,11 +1,6 @@
 package com.camunda.powerbi.service;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -14,7 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -41,11 +42,9 @@ public class GetTokenAccess {
 	   return builder.build();
 	}
 	
-	/**
-	 * @author AvinashRavat
-	 * @param Job Instances
-	 * This function will take all inputs from job
-	 */
+	private RestTemplate restTemplate;
+	
+	
 	@SuppressWarnings("unchecked")
 	@ZeebeWorker(type = "getDataSetsTask", autoComplete = true)
 	public void generateToken(final ActivatedJob job)
@@ -61,38 +60,34 @@ public class GetTokenAccess {
 		String url=env.getProperty("url")+tenant_id+"/oauth2/token";
 		getAccessToken(url,client_id,dataset_id,client_secret);
 		
+		
 	}
 	
-	/**
-	 * @author AvinashRavat
-	 * @param stringUrl
-	 * @param clientId
-	 * @param dataset_id
-	 * @param client_secret
-	 * This function will generate access token by using parameters
-	 */
-	public void getAccessToken(String stringUrl,String client_id,String dataset_id,String client_secret) throws IOException, InterruptedException {
+	public void getAccessToken(String url,String client_id,String dataset_id,String client_secret) throws IOException, InterruptedException {
+		//GET
+		/*String urls="https://covid19.mathdro.id/api";
+		HttpRequest request=HttpRequest.newBuilder().GET().uri(URI.create(urls)).build();
+		HttpClient client=HttpClient.newBuilder().build();
+		HttpResponse<String> response=client.send(request, HttpResponse.BodyHandlers.ofString());
+		System.out.println("Value "+response.body());*/
+		
+//		String urlEncoded=url+"?grant_type=client_credentials&client_id="+client_id+"&client_secret="+client_secret+"&scope=Dataset.ReadWrite.All";
 
-		    logger.error(stringUrl);
-
-		    URL url = new URL(stringUrl);
-	        String postData = "grant_type=client_credentials&client_id="+client_id+"&client_secret="+client_secret+"&scope=Dataset.ReadWrite.All";
-	 
-	        URLConnection conn = url.openConnection();
-	        conn.setDoOutput(true);
-	        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-	        conn.setRequestProperty("Content-Length", Integer.toString(postData.length()));
-	 
-	        try (DataOutputStream dos = new DataOutputStream(conn.getOutputStream())) {
-	            dos.writeBytes(postData);
-	        }
-	 
-	        try (BufferedReader bf = new BufferedReader(new InputStreamReader(
-	                                                        conn.getInputStream())))
-	        {
-			
-	        	System.out.println(bf.readLine());
-	        }
+		 logger.error(url);
+		
+		 HttpHeaders headers = new HttpHeaders();
+         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+         MultiValueMap<String, Object> requestFormData = new LinkedMultiValueMap<>();
+         requestFormData.add("grant_type",env.getProperty("grant_type"));
+         requestFormData.add("client_id", client_id);
+         requestFormData.add("client_secret", client_secret);
+         requestFormData.add("scope", env.getProperty("scope"));
+         logger.error("1");
+         HttpEntity<Object> request = new HttpEntity<>(requestFormData, headers);
+         logger.error("2");
+         Object response = restTemplate.exchange(url,HttpMethod.POST, request, Object.class);
+         logger.error("response ", response.toString());
+				
 		
 	}
 

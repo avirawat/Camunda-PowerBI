@@ -90,8 +90,11 @@ public class GetTokenAccess {
 	        try (BufferedReader bf = new BufferedReader(new InputStreamReader(
 	                                                        conn.getInputStream())))
 	        {
-			
-	        	System.out.println(bf.readLine());
+	            String line;
+	            while ((line = bf.readLine()) != null) {
+	            	System.out.println();
+	                System.out.println(line);
+	            }
 	        }
 		
 	}
