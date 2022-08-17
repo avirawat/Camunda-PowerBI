@@ -38,7 +38,6 @@ INDEX VERSION 1.131+C:\Users\AvinashRavat\Desktop\Camunda\POWER BI\.metadata\.pl
 3667665305.index
 800812535.index
 515331912.index
-3236274679.index
 1686530919.index
 1808695638.index
 3853173455.index
