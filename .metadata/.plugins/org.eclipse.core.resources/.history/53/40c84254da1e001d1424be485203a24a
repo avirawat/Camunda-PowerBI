@@ -1,0 +1,103 @@
+package com.camunda.powerbi.service;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
+
+import com.camunda.powerbi.ConstantVariables;
+import com.camunda.powerbi.exceptions.TokenAccessException;
+
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
+
+/**
+ * @author AvinashRavat
+ *
+ */
+@Service
+public class GetTokenAccess {
+
+	private static final String CLIENT_ID = ConstantVariables.CLIENT_ID;
+	private static final String TENANT_ID = ConstantVariables.TENANT_ID;
+	private static final String CLIENT_SECRET = ConstantVariables.CLIENT_SECRET;
+	private static final String DATASET_ID = ConstantVariables.DATASET_ID;
+	private static final String GRANT_TYPE = ConstantVariables.GRANT_TYPE;
+	private static final String SCOPE = ConstantVariables.SCOPE;
+	private static final String ACCESS_TOKEN = ConstantVariables.ACCESS_TOKEN;
+
+	private static Logger logger = LoggerFactory.getLogger(GetTokenAccess.class);
+
+	@Autowired
+	Environment env;
+
+	@Autowired
+	GetDataSets getDataSets;
+
+	/**
+	 * @author AvinashRavat
+	 * @param Job Instances This function will take all inputs from job
+	 * @throws InterruptedException
+	 */
+	@ZeebeWorker(type = "getDataSetsTask", autoComplete = true)
+	public void generateToken(final ActivatedJob job) throws TokenAccessException, IOException, InterruptedException {
+		logger.error("Inside Service task");
+
+		String jsonString = job.getVariables();
+		// change jsonString to jsonObject
+		JSONObject json = new JSONObject(jsonString);
+		// Getting process instance value
+		String client_id = json.getString(CLIENT_ID);
+		String tenant_id = json.getString(TENANT_ID);
+		String dataset_id = json.getString(DATASET_ID);
+		String client_secret = json.getString(CLIENT_SECRET);
+		// Getting url from properties file
+		String url = env.getProperty("url") + tenant_id + "/oauth2/token";
+		getAccessToken(url, client_id, dataset_id, client_secret);
+
+	}
+
+	/**
+	 * @author AvinashRavat
+	 * @param stringUrl
+	 * @param clientId
+	 * @param dataset_id
+	 * @param client_secret This function will generate access token by using
+	 *                      parameters
+	 */
+	public void getAccessToken(String stringUrl, String client_id, String dataset_id, String client_secret)
+			throws TokenAccessException, IOException {
+
+		String accessToken = "";
+		logger.error("Generating access token " + stringUrl);
+
+		URL url = new URL(stringUrl);
+		String postData = "grant_type=" + GRANT_TYPE + "&client_id=" + client_id + "&client_secret=" + client_secret
+				+ "&scope=" + SCOPE;
+
+		URLConnection conn = url.openConnection();
+		conn.setDoOutput(true);
+		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		conn.setRequestProperty("Content-Length", Integer.toString(postData.length()));
+
+		DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+		dos.writeBytes(postData);
+
+		BufferedReader bf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+		JSONObject json = new JSONObject(bf.readLine());
+		accessToken = json.getString(ACCESS_TOKEN);
+		logger.error(accessToken);
+		getDataSets.getAllDataSet(accessToken,dataset_id);
+	}
+
+}

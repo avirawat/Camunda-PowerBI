@@ -1,0 +1,61 @@
+package com.camunda.powerbi.service;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
+
+
+/**
+ * @author AvinashRavat
+ *
+ */
+@Service
+public class GetDataSets {
+
+	@Autowired
+	Environment env;
+
+	private static Logger logger = LoggerFactory.getLogger(GetDataSets.class);
+
+	/**
+	 * @author AvinashRavat
+	 * @param access Token
+	 * @param dataset_id
+	 * @return This function will return dataset by using dataset ID and TOKEN
+	 */
+	public void getAllDataSet(String accessToken, String dataset_id) throws IOException {
+		logger.error("Getting Datasets");
+		String getDataSetUrl = env.getProperty("getDatasetUrl") + dataset_id;
+		logger.error(getDataSetUrl);
+
+		  // Sending get request
+        URL url = new URL(getDataSetUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        logger.error("Setting body properties");
+        conn.setRequestProperty("Authorization","Bearer "+ accessToken);
+        conn.setRequestProperty("Content-Type","application/json");
+        conn.setRequestMethod("GET");
+        logger.error("Added all needed params");
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String output;
+        logger.error("Reading value in buffer Reader");
+        StringBuffer response = new StringBuffer();
+        logger.error("response "+response);
+        while ((output = in.readLine()) != null) {
+            response.append(output);
+        }
+
+        in.close();
+        // printing result from response
+        System.out.println("Response:-" + response.toString());
+	}
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;TokenAccessException.java&apos; to &apos;camunda-PowerBI/src/main/java/com.camunda.powerbi.exceptions&apos;&#x0D;&#x0A;- Original project: &apos;camunda-PowerBI&apos;&#x0D;&#x0A;- Destination element: &apos;camunda-PowerBI/src/main/java/com.camunda.powerbi.exceptions&apos;&#x0D;&#x0A;- Original element: &apos;com.camunda.powerbi.exceptions.TokenAccessException.java&apos;" description="Copy compilation unit" destination="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.camunda.powerbi.exceptions" element1="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.camunda.powerbi.exceptions{TokenAccessException.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1660767645337" units="1" version="1.0"/>
+</session>

@@ -1,0 +1,46 @@
+package com.camunda.powerbi.service;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
+
+@Service
+public class GetDataSets {
+
+	@Autowired
+	Environment env;
+
+	private static Logger logger = LoggerFactory.getLogger(GetDataSets.class);
+
+	public String getAllDataSet(String accessToken, String dataset_id) throws IOException {
+		logger.error("Getting Datasets");
+		String getDataSetUrl = env.getProperty("getDatasetUrl") + dataset_id;
+		logger.error(getDataSetUrl);
+
+		URL url = new URL(getDataSetUrl);
+
+		URLConnection conn = url.openConnection();
+		conn.setDoOutput(true);
+		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+		BufferedReader bf = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+		JSONObject json = new JSONObject(bf.readLine());
+		accessToken = json.getString("access_token");
+		logger.error(accessToken);
+
+		return accessToken;
+
+	}
+}

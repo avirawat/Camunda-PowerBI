@@ -1,0 +1,6 @@
+server.port= 9090
+zeebe.client.broker.gatewayAddress=127.0.0.1:26500
+zeebe.client.security.plaintext=true
+url=https://login.microsoftonline.com/
+grant_type=client_credentials
+scope=Dataset.ReadWrite.All

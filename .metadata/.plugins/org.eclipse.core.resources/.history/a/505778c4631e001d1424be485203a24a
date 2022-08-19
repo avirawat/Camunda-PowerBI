@@ -1,0 +1,9 @@
+package com.camunda.powerbi;
+
+public class ConstantVariables {
+	
+	private static String CLIENT_ID="client_id";
+	private static String TENENT_ID="tenant_id";
+	private static String DATASET_ID="dataset_id";
+	private static String CLIENT_SECRET="client_secret";
+}
