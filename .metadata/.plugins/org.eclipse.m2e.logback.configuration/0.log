@@ -699,3 +699,4 @@
 2022-08-19 11:13:10,825 [Worker-2: Launching PowerBIMainApplication] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
 2022-08-19 11:13:10,828 [Worker-2: Launching PowerBIMainApplication] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
 2022-08-19 11:13:10,828 [Worker-2: Launching PowerBIMainApplication] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2022-08-19 11:13:10,828 [Worker-2: Launching PowerBIMainApplication] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\AvinashRavat\Desktop\Camunda\POWER BI\camunda-PowerBI\src\test\resources
